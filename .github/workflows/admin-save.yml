@@ -3,14 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       payload:
-        required: false
-      data:
+        description: 'JSON Data'
         required: false
       signature:
-        required: false
-      password:
+        description: 'HMAC Signature'
         required: false
       token:
+        description: 'Auth Token'
         required: false
 
 jobs:
@@ -19,19 +18,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Save Data
+      - uses: actions/checkout@v4
+      
+      - name: Save Data to File
         run: |
-          # זיהוי איזה קלט הגיע (payload או data)
-          DATA_CONTENT='${{ github.event.inputs.payload }}${{ github.event.inputs.data }}'
-          
-          # יצירת התיקייה ושמירה
           mkdir -p data
-          echo "$DATA_CONTENT" > data/zmanim.json
+          echo '${{ github.event.inputs.payload }}' > data/zmanim.json
           
-          # עדכון הגיטהאב
-          git config user.name "Admin Editor"
-          git config user.email "admin@synagogue.com"
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "Admin Editor"
+          git config --global user.email "admin@synagogue.com"
           git add data/zmanim.json
-          git commit -m "Update zmanim via admin panel"
+          git commit -m "Update zmanim via admin panel" || echo "No changes to commit"
           git push
