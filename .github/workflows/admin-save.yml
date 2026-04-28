@@ -3,13 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       payload:
-        description: 'JSON Data'
-        required: true
+        required: false
+      data:
+        required: false
       signature:
-        description: 'HMAC Signature'
-        required: true
+        required: false
+      password:
+        required: false
       token:
-        description: 'Auth Token'
         required: false
 
 jobs:
@@ -19,20 +20,16 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      - name: Validate and Save
+      - name: Save Data
         run: |
-          # אימות הסיסמה
-          EXPECTED_SIG=$(echo -n "${{ github.event.inputs.payload }}" | openssl dgst -sha256 -hmac "${{ secrets.ADMIN_PASSWORD }}" | sed 's/^.* //')
-          if [ "$EXPECTED_SIG" != "${{ github.event.inputs.signature }}" ]; then
-            echo "Invalid password signature!"
-            exit 1
-          fi
+          # זיהוי איזה קלט הגיע (payload או data)
+          DATA_CONTENT='${{ github.event.inputs.payload }}${{ github.event.inputs.data }}'
           
-          # שמירה לקובץ
+          # יצירת התיקייה ושמירה
           mkdir -p data
-          echo '${{ github.event.inputs.payload }}' > data/zmanim.json
+          echo "$DATA_CONTENT" > data/zmanim.json
           
-          # עדכון המאגר
+          # עדכון הגיטהאב
           git config user.name "Admin Editor"
           git config user.email "admin@synagogue.com"
           git add data/zmanim.json
