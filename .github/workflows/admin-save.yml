@@ -1,1 +1,35 @@
+name: Admin Save Data
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: 'JSON Data'
+        required: true
+      signature:
+        description: 'HMAC Signature'
+        required: true
 
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate and Save
+        run: |
+          # חישוב החתימה לאימות הסיסמה
+          EXPECTED_SIG=$(echo -n "${{ github.event.inputs.payload }}" | openssl dgst -sha256 -hmac "${{ secrets.ADMIN_PASSWORD }}" | sed 's/^.* //')
+          if [ "$EXPECTED_SIG" != "${{ github.event.inputs.signature }}" ]; then
+            echo "Invalid password signature!"
+            exit 1
+          fi
+          
+          # יצירת תיקיית data אם היא לא קיימת ושמירת הקובץ
+          mkdir -p data
+          echo '${{ github.event.inputs.payload }}' > data/zmanim.json
+          
+          # ביצוע ה-Commit למאגר
+          git config user.name "Admin Editor"
+          git config user.email "admin@synagogue.com"
+          git add data/zmanim.json
+          git commit -m "Update zmanim via admin panel"
+          git push
