@@ -1,0 +1,39 @@
+{
+  "synagogueName": "בית הכנסת המרכזי",
+  "location": {
+    "address": "אלקנה 14 ירושלים",
+    "latitude": 31.7940984,
+    "longitude": 35.2138072,
+    "timezone": "Asia/Jerusalem",
+    "candleLightingMinutes": 40
+  },
+  "displayedZmanim": {
+    "alotHaShachar": true,
+    "misheyakir": true,
+    "sunrise": true,
+    "sofZmanShma": true,
+    "sofZmanTfilla": true,
+    "chatzot": true,
+    "minchaGedola": true,
+    "minchaKetana": true,
+    "plagHaMincha": true,
+    "sunset": true,
+    "tzeit": true,
+    "sofZmanShmaMGA": true,
+    "sofZmanTfillaMGA": true
+  },
+  "theme": {
+    "accent": "#d4af37",
+    "background": "#0e1320"
+  },
+  "rotation": {
+    "enabled": false,
+    "intervalSeconds": 20
+  },
+  "zmanimOverrides": {},
+  "design": {
+    "theme": "stone",
+    "layout": "3col",
+    "style": "classic"
+  }
+}
